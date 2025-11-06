@@ -1,0 +1,26 @@
+services:
+  api-blue:
+    build: ../app
+    environment:
+      - APP_VERSION=blue
+    networks: [web]
+
+  api-green:
+    build: ../app
+    environment:
+      - APP_VERSION=green
+    networks: [web]
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - api-blue
+      - api-green
+    networks: [web]
+
+networks:
+  web: {}
