@@ -1,7 +1,29 @@
-This project demonstrates a **zero-downtime Blue-Green Deployment** architecture using **Docker Compose** and **NGINX**.
 
-## Overview
-Two identical Node.js API containers (`api-blue` and `api-green`) run in parallel.  
-NGINX acts as a reverse proxy and routes all traffic to one of them (Blue or Green).  
-By rebuilding and reloading NGINX, traffic can be switched instantly — simulating a production deployment rollout without downtime.
+This project shows how to deploy updates without downtime using **Docker Compose**, **Node.js**, and **NGINX**.
 
+- Two versions of the same app run: **Blue** and **Green**.  
+- Only one version is live at a time.  
+- You can switch traffic between them using a script.  
+- NGINX handles the routing.  
+- A small web page shows which version is active.
+
+## Run the project
+
+```bash
+cd deploy
+docker compose build
+docker compose up -d
+Check which version is live:
+curl http://localhost:8080/version
+
+Switch versions: bash switch.sh blue
+bash switch.sh green
+
+To view in a browser:
+cd ../frontend
+python3 -m http.server 5500
+
+Purpose
+
+A simple demo of Blue-Green deployment — a DevOps technique for zero downtime during app updates. 
+eof
