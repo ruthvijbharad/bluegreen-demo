@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blue-Green Deployment Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+      color: #333;
+      flex-direction: column;
+    }
+    .version {
+      font-size: 2em;
+      padding: 20px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .blue { color: #007bff; }
+    .green { color: #28a745; }
+  </style>
+</head>
+<body>
+  <h1>Current Active Version</h1>
+  <div id="version" class="version">Loading...</div>
+
+  <script>
+    async function fetchVersion() {
+      try {
+        const res = await fetch("http://localhost:8080/version");
+        const data = await res.json();
+        const div = document.getElementById("version");
+        div.textContent = data.version.toUpperCase();
+        div.className = "version " + data.version;
+      } catch (err) {
+        document.getElementById("version").textContent = "Unable to fetch version";
+      }
+    }
+    fetchVersion();
+    setInterval(fetchVersion, 5000);
+  </script>
+</body>
+</html>

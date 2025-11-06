@@ -1,20 +1,37 @@
-import express from "express";
+const express = require("express");
 const app = express();
+
+// Get version from environment variable
+const version = process.env.APP_VERSION || "blue";
+
+// Enable JSON parsing
 app.use(express.json());
 
-const VERSION = process.env.APP_VERSION || "v1";
-let items = [];
-
-app.get("/health", (_, res) => res.json({ status: "ok" }));
-app.get("/version", (_, res) => res.json({ version: VERSION }));
-app.get("/items", (_, res) => res.json(items));
-app.post("/items", (req, res) => {
-  const { title } = req.body || {};
-  if (!title) return res.status(400).json({ error: "title required" });
-  const item = { id: Date.now(), title };
-  items.push(item);
-  res.status(201).json(item);
+// Enable CORS (allow requests from any origin)
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`API running on port ${port}, version ${VERSION}`));
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", version });
+});
+
+// Version endpoint
+app.get("/version", (req, res) => {
+  res.json({ version });
+});
+
+// Root endpoint (optional)
+app.get("/", (req, res) => {
+  res.send(`API running, version: ${version}`);
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`API running on port ${PORT}, version ${version}`);
+});
